@@ -22,6 +22,11 @@ if [ -z "$AWS_REGION" ]; then
   exit 1
 fi
 
+# Default to syncing entire repo if DEST_DIR not set.
+if [ -z "$DEST_DIR" ]; then
+  DEST_DIR="."
+fi
+
 # Create a dedicated profile for this action to avoid
 # conflicts with other actions.
 # https://github.com/jakejarvis/s3-sync-action/issues/1
@@ -34,5 +39,5 @@ EOF
 
 # Use our dedicated profile and suppress verbose messages.
 # All other flags are optional via `args:` directive.
-sh -c "aws s3 cp s3://${AWS_S3_BUCKET} . \
+sh -c "aws s3 cp s3://${AWS_S3_BUCKET} ${DEST_DIR} \
               --recursive $*"
