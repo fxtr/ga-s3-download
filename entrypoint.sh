@@ -1,6 +1,6 @@
 #!/bin/sh
-
 set -e
+set -o xtrace
 
 if [ -z "$AWS_S3_BUCKET" ]; then
   echo "AWS_S3_BUCKET is not set. Quitting."
@@ -39,5 +39,9 @@ EOF
 
 # Use our dedicated profile and suppress verbose messages.
 # All other flags are optional via `args:` directive.
-sh -c "aws s3 cp s3://${AWS_S3_BUCKET} ${DEST_DIR} \
-              --recursive $*"
+
+if [ "$RECURSIVE" = true ] ; then
+  sh -c "aws s3 cp s3://${AWS_S3_BUCKET} ${DEST_DIR} --recursive $*"
+else
+  sh -c "aws s3 cp s3://${AWS_S3_BUCKET} ${DEST_DIR} $*"
+fi
